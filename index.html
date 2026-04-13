@@ -16,7 +16,8 @@
         label { display: block; margin-bottom: 5px; font-size: 0.85rem; color: #94a3b8; font-weight: 500; }
         input { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #334155; border-radius: 8px; background: #0f172a; color: white; box-sizing: border-box; font-size: 1rem; outline: none; }
         input:focus { border-color: #22d3ee; }
-        .calc-btn { width: 100%; padding: 14px; background: #0891b2; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 1rem; margin-top: 10px; }
+        .consent-text { font-size: 0.75rem; color: #64748b; margin-bottom: 15px; line-height: 1.4; text-align: center; }
+        .calc-btn { width: 100%; padding: 14px; background: #0891b2; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 1rem; }
         .hidden { display: none; }
         .result-box { background: #064e3b; border: 1px solid #059669; padding: 20px; border-radius: 12px; margin-top: 20px; text-align: center; }
         .result-box h3 { margin: 0; color: #34d399; font-size: 1.8rem; }
@@ -45,9 +46,13 @@
             <label>Prescribed Dose (mg)</label>
             <input type="number" id="dose-mg" placeholder="Your target dose (e.g. 0.25)">
             
-            <label>Email for Results & Protein Guide</label>
+            <label>Email Address</label>
             <input type="email" id="user-email" placeholder="name@email.com">
             
+            <div class="consent-text">
+                By calculating, you agree to receive your one-time report and our weekly <strong>Longevity Horizons Digest</strong>. No spam, just science. Unsubscribe anytime.
+            </div>
+
             <button class="calc-btn" onclick="runCalculation()">Calculate & Send Report</button>
         </div>
 
@@ -58,7 +63,7 @@
                 <p style="font-size: 0.75rem; color: #34d399; margin-top: 5px;">(Based on U-100 Syringe)</p>
             </div>
             <p style="text-align: center; font-size: 0.85rem; color: #94a3b8; margin-top: 20px;">
-                Your protocol report and <strong>Muscle Preservation Guide</strong> have been dispatched to your inbox.
+                Your report and <strong>Muscle Preservation Guide</strong> are on the way to your inbox.
             </p>
             <button onclick="window.location.reload()" style="width:100%; background: transparent; border: 1px solid #334155; color: #94a3b8; padding: 10px; border-radius: 8px; margin-top: 10px; cursor: pointer;">New Calculation</button>
         </div>
@@ -88,7 +93,6 @@
             const finalUnits = Math.round(units);
             document.getElementById('units-val').innerText = finalUnits;
 
-            // --- SENDER.NET INTEGRATION ---
             const apiToken = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiZTQwMzkyYmQ4YTg5ZjYzOWQzZDQzYmNiNjU3YTM3Mzg4OGI3MjE3YjA0YjEzZmQyNzg5MzhhOTZjZmE2NmZhOGQwZmRlZDU0MzU1ZGFiYjciLCJpYXQiOjE3NzYwNzgxMDguNTAwMzg4LCJuYmYiOjE3NzYwNzgxMDguNTAwMzksImV4cCI6NDkyOTY4MTcwOC40OTc5NzYsInN1YiI6IjEwNjYwMjgiLCJzY29wZXMiOltdfQ.uYajw-yrMSq6Pd05Nlxtc4ALOm0D7kM5IrzZghiMP2MPVuvOW5V8Age2f9vmpBvOaDK01FAHWxOrWiUDTyw4NdR3PCjezHtWPfsIE1-jurbD5zCtab_PYP8Gx6oaoU4LqEUCemACifbOOgfRmuBNEEdp39HMCmUZeVTv6hrpt3RPanxKTm8sF-VC62i3anZiwaQF52LMXlGAVvn4CcCFm4PI_MyQ8raGmpfwxtmWyz0DeemIKGsE-eX6Uz15usWejoiN8uouHBQqfbdjJd8v0_zJC-pK2vW4Jg5ScTFjKxWxWPOdgZ31Beo-BhMJ18T-S9mNgFynBPHJbd_vsWil67R-dHrYKUs6oiu2389k6hhLsouqnPXY0COpW5tXuK1xNXt-FG-GcLi6SeNuuWywDdwiR_FEbpAjBgqinkvfea_cfriPdhc25iQZmjityTSpvP3P-vtfBiWy2UZGTaXigIGW3cpi2pGwXR2qf4VpJIA7aET219Gxx7A0x8cRGwoHssnVPBO56StLKqxkkyIXEmofN3jA9sSTU36TQ6iwCKcb_VkrwkZNgRWCXiC_Zg_cqXFrnePsDtWufim2gPRFBSOqWh0RChbMKxvNRJFhWnfDMTdg_3FyprIoDTobmdpv7q_TC1QB4maoOnzFEqj3wZVV3fiTGtznul3J-O_bVgA';
             
             fetch('https://api.sender.net/v2/subscribers', {
@@ -105,10 +109,6 @@
                         "calculated_dose": finalUnits.toString()
                     }
                 })
-            }).then(response => {
-                console.log('Sender.net Success:', response);
-            }).catch(error => {
-                console.error('Sender.net Error:', error);
             });
 
             document.getElementById('calculator-ui').classList.add('hidden');
