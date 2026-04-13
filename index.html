@@ -84,15 +84,35 @@
 
             if(!email || !mg || !ml || !dose) { alert("Please fill all fields to generate your report."); return; }
 
-            // The Math: (Dose / Total mg) * Total ml * 100 (for units)
             const units = (dose / mg) * ml * 100;
-            document.getElementById('units-val').innerText = Math.round(units);
+            const finalUnits = Math.round(units);
+            document.getElementById('units-val').innerText = finalUnits;
+
+            // --- SENDER.NET INTEGRATION ---
+            const apiToken = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiZTQwMzkyYmQ4YTg5ZjYzOWQzZDQzYmNiNjU3YTM3Mzg4OGI3MjE3YjA0YjEzZmQyNzg5MzhhOTZjZmE2NmZhOGQwZmRlZDU0MzU1ZGFiYjciLCJpYXQiOjE3NzYwNzgxMDguNTAwMzg4LCJuYmYiOjE3NzYwNzgxMDguNTAwMzksImV4cCI6NDkyOTY4MTcwOC40OTc5NzYsInN1YiI6IjEwNjYwMjgiLCJzY29wZXMiOltdfQ.uYajw-yrMSq6Pd05Nlxtc4ALOm0D7kM5IrzZghiMP2MPVuvOW5V8Age2f9vmpBvOaDK01FAHWxOrWiUDTyw4NdR3PCjezHtWPfsIE1-jurbD5zCtab_PYP8Gx6oaoU4LqEUCemACifbOOgfRmuBNEEdp39HMCmUZeVTv6hrpt3RPanxKTm8sF-VC62i3anZiwaQF52LMXlGAVvn4CcCFm4PI_MyQ8raGmpfwxtmWyz0DeemIKGsE-eX6Uz15usWejoiN8uouHBQqfbdjJd8v0_zJC-pK2vW4Jg5ScTFjKxWxWPOdgZ31Beo-BhMJ18T-S9mNgFynBPHJbd_vsWil67R-dHrYKUs6oiu2389k6hhLsouqnPXY0COpW5tXuK1xNXt-FG-GcLi6SeNuuWywDdwiR_FEbpAjBgqinkvfea_cfriPdhc25iQZmjityTSpvP3P-vtfBiWy2UZGTaXigIGW3cpi2pGwXR2qf4VpJIA7aET219Gxx7A0x8cRGwoHssnVPBO56StLKqxkkyIXEmofN3jA9sSTU36TQ6iwCKcb_VkrwkZNgRWCXiC_Zg_cqXFrnePsDtWufim2gPRFBSOqWh0RChbMKxvNRJFhWnfDMTdg_3FyprIoDTobmdpv7q_TC1QB4maoOnzFEqj3wZVV3fiTGtznul3J-O_bVgA';
+            
+            fetch('https://api.sender.net/v2/subscribers', {
+                method: 'POST',
+                headers: {
+                    'Authorization': 'Bearer ' + apiToken,
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    "email": email,
+                    "groups": ["avwl7g"],
+                    "fields": {
+                        "calculated_dose": finalUnits.toString()
+                    }
+                })
+            }).then(response => {
+                console.log('Sender.net Success:', response);
+            }).catch(error => {
+                console.error('Sender.net Error:', error);
+            });
 
             document.getElementById('calculator-ui').classList.add('hidden');
             document.getElementById('results').classList.remove('hidden');
-
-            // TODO: Link Sender.net API here
-            console.log("Lead captured: " + email + " | Dose: " + dose + "mg");
         }
     </script>
 </body>
